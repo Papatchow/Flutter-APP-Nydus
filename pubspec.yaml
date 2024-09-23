@@ -1,0 +1,34 @@
+name: appteste
+
+description: "A new Flutter project."
+
+
+
+environment:
+  sdk: '>=3.5.0-6.0.dev <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+    
+  cupertino_icons: ^1.0.6
+  smooth_page_indicator: ^1.2.0+3
+
+dev_dependencies:
+
+  flutter_test:
+
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/
+    - assets/images/
+
+
