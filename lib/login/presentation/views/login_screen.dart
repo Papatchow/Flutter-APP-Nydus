@@ -86,12 +86,14 @@ class _registrationState extends State<registration> {
                       ),
                       Divider(),
                       TextButton(
-                          onPressed: () {
-                            setState(() {
-                              recuperar = !recuperar;
-                            });
-                          },
-                          child: Text((recuperar) ? "Esqueci a senha" : "Fazer Login"),),
+                        onPressed: () {
+                          setState(() {
+                            recuperar = !recuperar;
+                          });
+                        },
+                        child: Text(
+                            (recuperar) ? "Esqueci a senha" : "Fazer Login"),
+                      ),
                       Divider(),
                       Align(
                         alignment: Alignment.bottomCenter,
