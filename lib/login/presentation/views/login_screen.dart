@@ -1,4 +1,5 @@
 import "package:appteste/_comum/minhascores.dart";
+import "package:appteste/login/presentation/views/login_decoration.dart";
 import "package:flutter/material.dart";
 
 class registration extends StatefulWidget {
@@ -10,7 +11,7 @@ class registration extends StatefulWidget {
 
 class _registrationState extends State<registration> {
   bool queroEntrar = true;
-  bool recuperar = true;
+  bool recuperar = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,69 +45,104 @@ class _registrationState extends State<registration> {
                         "NydusRH",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 40,
                           fontWeight: FontWeight.bold,
                           color: Colors.blue,
                         ),
                       ),
                       const SizedBox(height: 32),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          label: Text("E-Mail"),
+                      
+                      Visibility(
+                        visible: !recuperar,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              decoration: getAuthenticationInputDecoration("E-Mail"),
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              decoration: getAuthenticationInputDecoration("Senha"),
+                              obscureText: true,
+                            ),
+                             const SizedBox(height: 8),
+                          ],
                         ),
                       ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          label: Text("Senha"),
-                        ),
-                        obscureText: true,
+                      Visibility(
+                        visible: recuperar,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              decoration: getAuthenticationInputDecoration("Nova Senha"),
+                              obscureText: true,
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            decoration:getAuthenticationInputDecoration("Confirme a Nova Senha"),
+                            obscureText: true,
+                          )
+                          ],)
                       ),
+                      const SizedBox(height: 8),
+
                       Visibility(
                         visible: !queroEntrar,
                         child: Column(
                           children: [
                             TextFormField(
-                              decoration: InputDecoration(
-                                label: Text("Confirmar Senha"),
-                              ),
+                              decoration: getAuthenticationInputDecoration(
+                                  "Confirme a Senha"),
                               obscureText: true,
                             ),
+                            const SizedBox(height: 8),
                             TextFormField(
-                              decoration: InputDecoration(
-                                label: Text("Nome"),
-                              ),
+                              decoration:
+                                  getAuthenticationInputDecoration("Nome"),
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            )),
                         onPressed: () {},
-                        child: Text((queroEntrar) ? "Entrar" : "Cadastrar"),
+                        child: Text(
+                          (queroEntrar) ? "Entrar" : "Cadastrar",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ),
+                      Divider(),
+                      const SizedBox(height: 4),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            setState(() {
+                              recuperar = !recuperar;
+                            });
+                          },
+                          child: Text(
+                              (recuperar) ? "Fazer Login" : "Esqueci a Senha",
+                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),),
+                        ),
                       ),
                       Divider(),
                       TextButton(
-                        onPressed: () {
-                          setState(() {
-                            recuperar = !recuperar;
-                          });
-                        },
-                        child: Text(
-                            (recuperar) ? "Esqueci a senha" : "Fazer Login"),
-                      ),
-                      Divider(),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: TextButton(
-                            onPressed: () {
-                              setState(() {
-                                queroEntrar = !queroEntrar;
-                              });
-                            },
-                            child: Text((queroEntrar)
-                                ? "Não tem conta? Cadastre-se!"
-                                : "Já tem uma conta? Entre!")),
-                      )
+                          onPressed: () {
+                            setState(() {
+                              queroEntrar = !queroEntrar;
+                            });
+                          },
+                          child: Text(
+                            (queroEntrar) ? "Não tem conta? Cadastre-se!": "Já tem uma conta? Entre!",
+                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),)),
                     ],
                   ),
                 ),
