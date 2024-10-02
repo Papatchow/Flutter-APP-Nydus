@@ -1,4 +1,6 @@
 import "package:appteste/_comum/minhascores.dart";
+import "package:appteste/_comum/my_snackbar.dart";
+import "package:appteste/login/presentation/views/login_autenthication.dart";
 import "package:appteste/login/presentation/views/login_decoration.dart";
 import "package:flutter/material.dart";
 
@@ -13,6 +15,12 @@ class _registrationState extends State<registration> {
   bool queroEntrar = true;
   bool recuperar = false;
   final _formKey = GlobalKey<FormState>();
+
+  TextEditingController _emailcontroller = TextEditingController();
+  TextEditingController _senhacontroller = TextEditingController();
+  TextEditingController _nomecontroller = TextEditingController();
+
+  ServiceAuthentication _serviceAut = ServiceAuthentication();
 
   @override
   Widget build(BuildContext context) {
@@ -58,35 +66,37 @@ class _registrationState extends State<registration> {
                         child: Column(
                           children: [
                             TextFormField(
+                              controller: _emailcontroller,
                               decoration:
                                   getAuthenticationInputDecoration("E-Mail"),
-                                  validator:  (String? value) {
-                                    if (value == null){
-                                      return "O E-mail não pode ser vazio";
-                                    }
-                                    if (value.length < 5){
-                                      return "O e-mail é muito curto";
-                                    }
-                                    if (!value.contains("@")){
-                                      return "O e-mail não é válido";
-                                    }
-                                    return null;
-                                  },
+                              validator: (String? value) {
+                                if (value == null) {
+                                  return "O E-mail não pode ser vazio";
+                                }
+                                if (value.length < 5) {
+                                  return "O e-mail é muito curto";
+                                }
+                                if (!value.contains("@")) {
+                                  return "O e-mail não é válido";
+                                }
+                                return null;
+                              },
                             ),
                             const SizedBox(height: 8),
                             TextFormField(
+                              controller: _senhacontroller,
                               decoration:
                                   getAuthenticationInputDecoration("Senha"),
                               obscureText: true,
-                              validator:  (String? value) {
-                                    if (value == null){
-                                      return "A senha não pode ser vazia";
-                                    }
-                                    if (value.length < 3){
-                                      return "A senha é muito curta";
-                                    }
-                                    return null;
-                                  },
+                              validator: (String? value) {
+                                if (value == null) {
+                                  return "A senha não pode ser vazia";
+                                }
+                                if (value.length < 3) {
+                                  return "A senha é muito curta";
+                                }
+                                return null;
+                              },
                             ),
                             const SizedBox(height: 8),
                           ],
@@ -100,30 +110,30 @@ class _registrationState extends State<registration> {
                                 decoration: getAuthenticationInputDecoration(
                                     "Nova Senha"),
                                 obscureText: true,
-                                validator:  (String? value) {
-                                    if (value == null){
-                                      return "A nova senha não pode ser vazia";
-                                    }
-                                    if (value.length < 5){
-                                      return "A nova senha é muito curta";
-                                    }
-                                    return null;
-                                  },
+                                validator: (String? value) {
+                                  if (value == null) {
+                                    return "A nova senha não pode ser vazia";
+                                  }
+                                  if (value.length < 5) {
+                                    return "A nova senha é muito curta";
+                                  }
+                                  return null;
+                                },
                               ),
                               const SizedBox(height: 8),
                               TextFormField(
                                 decoration: getAuthenticationInputDecoration(
                                     "Confirme a Nova Senha"),
                                 obscureText: true,
-                                validator:  (String? value) {
-                                    if (value == null){
-                                      return "A confirmação da senha não pode ser vazia";
-                                    }
-                                    if (value.length < 5){
-                                      return "A confirmação de senha é muito curta";
-                                    }
-                                    return null;
-                                  },
+                                validator: (String? value) {
+                                  if (value == null) {
+                                    return "A confirmação da senha não pode ser vazia";
+                                  }
+                                  if (value.length < 5) {
+                                    return "A confirmação de senha é muito curta";
+                                  }
+                                  return null;
+                                },
                               )
                             ],
                           )),
@@ -136,29 +146,30 @@ class _registrationState extends State<registration> {
                               decoration: getAuthenticationInputDecoration(
                                   "Confirme a Senha"),
                               obscureText: true,
-                              validator:  (String? value) {
-                                    if (value == null){
-                                      return "A confirmação de senha não pode ser vazia";
-                                    }
-                                    if (value.length < 5){
-                                      return "A confirmação de senha é muito curta";
-                                    }
-                                    return null;
-                                  },
+                              validator: (String? value) {
+                                if (value == null) {
+                                  return "A confirmação de senha não pode ser vazia";
+                                }
+                                if (value.length < 5) {
+                                  return "A confirmação de senha é muito curta";
+                                }
+                                return null;
+                              },
                             ),
                             const SizedBox(height: 8),
                             TextFormField(
+                              controller: _nomecontroller,
                               decoration:
                                   getAuthenticationInputDecoration("Nome"),
-                                  validator:  (String? value) {
-                                    if (value == null){
-                                      return "O nome não pode ser vazio";
-                                    }
-                                    if (value.length < 3){
-                                      return "O nome é muito curto";
-                                    }
-                                    return null;
-                                  },
+                              validator: (String? value) {
+                                if (value == null) {
+                                  return "O nome não pode ser vazio";
+                                }
+                                if (value.length < 3) {
+                                  return "O nome é muito curto";
+                                }
+                                return null;
+                              },
                             ),
                           ],
                         ),
@@ -225,9 +236,30 @@ class _registrationState extends State<registration> {
     );
   }
 
-  botaoprincipalClicado(){
-    if (_formKey.currentState!.validate()){
-      print("Form válido");
+  botaoprincipalClicado() {
+    String nome = _nomecontroller.text;
+    String email = _emailcontroller.text;
+    String senha = _senhacontroller.text;
+
+    if (_formKey.currentState!.validate()) {
+      if (queroEntrar) {
+        print("Entrada Validada");
+      } else {
+        print("Cadastro Validado");
+        print(
+            "${_emailcontroller.text}, ${_senhacontroller.text}, ${_nomecontroller.text}");
+        _serviceAut
+            .cadastrarUsuario(nome: nome, senha: senha, email: email)
+            .then((String? erro) {
+
+          if (erro != null) {
+            showSnackBar(context: context, texto: erro);
+          } else {
+            showSnackBar(context: context, texto: "Cadastro efetuado com sucesso", 
+            isErro: false);
+          }
+        });
+      }
     } else {
       print("Form inválido");
     }
