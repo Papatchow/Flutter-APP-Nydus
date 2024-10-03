@@ -3,6 +3,7 @@ import "package:appteste/_comum/my_snackbar.dart";
 import "package:appteste/login/presentation/views/login_autenthication.dart";
 import "package:appteste/login/presentation/views/login_decoration.dart";
 import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 
 class registration extends StatefulWidget {
   const registration({super.key});
@@ -19,6 +20,7 @@ class _registrationState extends State<registration> {
   TextEditingController _emailcontroller = TextEditingController();
   TextEditingController _senhacontroller = TextEditingController();
   TextEditingController _nomecontroller = TextEditingController();
+  TextEditingController _confirmarSenhacontroller = TextEditingController();
 
   ServiceAuthentication _serviceAut = ServiceAuthentication();
 
@@ -70,8 +72,8 @@ class _registrationState extends State<registration> {
                               decoration:
                                   getAuthenticationInputDecoration("E-Mail"),
                               validator: (String? value) {
-                                if (value == null) {
-                                  return "O E-mail não pode ser vazio";
+                                if (value == null || value.isEmpty) {
+                                  return "Preenchimento Obrigatório";
                                 }
                                 if (value.length < 5) {
                                   return "O e-mail é muito curto";
@@ -89,8 +91,8 @@ class _registrationState extends State<registration> {
                                   getAuthenticationInputDecoration("Senha"),
                               obscureText: true,
                               validator: (String? value) {
-                                if (value == null) {
-                                  return "A senha não pode ser vazia";
+                                if (value == null || value.isEmpty) {
+                                  return "Preenchimento Obrigatório";
                                 }
                                 if (value.length < 3) {
                                   return "A senha é muito curta";
@@ -98,7 +100,44 @@ class _registrationState extends State<registration> {
                                 return null;
                               },
                             ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Visibility(
+                        visible: !queroEntrar & !recuperar,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _confirmarSenhacontroller,
+                              decoration: getAuthenticationInputDecoration(
+                                  "Confirme a Senha"),
+                              obscureText: true,
+                              validator: (String? value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Preenchimento Obrigatório";
+                                }
+                                if (value != _senhacontroller.text) {
+                                  return "As senhas não correspondem";
+                                }
+                                return null;
+                              },
+                            ),
                             const SizedBox(height: 8),
+                            TextFormField(
+                              controller: _nomecontroller,
+                              decoration:
+                                  getAuthenticationInputDecoration("Nome"),
+                              validator: (String? value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Preenchimento Obrigatório";
+                                }
+                                if (value.length < 3) {
+                                  return "O nome é muito curto";
+                                }
+                                return null;
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -111,8 +150,8 @@ class _registrationState extends State<registration> {
                                     "Nova Senha"),
                                 obscureText: true,
                                 validator: (String? value) {
-                                  if (value == null) {
-                                    return "A nova senha não pode ser vazia";
+                                  if (value == null || value.isEmpty) {
+                                    return "Preenchimento Obrigatório";
                                   }
                                   if (value.length < 5) {
                                     return "A nova senha é muito curta";
@@ -126,8 +165,8 @@ class _registrationState extends State<registration> {
                                     "Confirme a Nova Senha"),
                                 obscureText: true,
                                 validator: (String? value) {
-                                  if (value == null) {
-                                    return "A confirmação da senha não pode ser vazia";
+                                  if (value == null || value.isEmpty) {
+                                    return "Preenchimento Obrigatório";
                                   }
                                   if (value.length < 5) {
                                     return "A confirmação de senha é muito curta";
@@ -137,43 +176,6 @@ class _registrationState extends State<registration> {
                               )
                             ],
                           )),
-                      const SizedBox(height: 8),
-                      Visibility(
-                        visible: !queroEntrar,
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              decoration: getAuthenticationInputDecoration(
-                                  "Confirme a Senha"),
-                              obscureText: true,
-                              validator: (String? value) {
-                                if (value == null) {
-                                  return "A confirmação de senha não pode ser vazia";
-                                }
-                                if (value.length < 5) {
-                                  return "A confirmação de senha é muito curta";
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              controller: _nomecontroller,
-                              decoration:
-                                  getAuthenticationInputDecoration("Nome"),
-                              validator: (String? value) {
-                                if (value == null) {
-                                  return "O nome não pode ser vazio";
-                                }
-                                if (value.length < 3) {
-                                  return "O nome é muito curto";
-                                }
-                                return null;
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
                       const SizedBox(height: 16),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -200,6 +202,7 @@ class _registrationState extends State<registration> {
                           onPressed: () {
                             setState(() {
                               recuperar = !recuperar;
+                              queroEntrar = true;
                             });
                           },
                           child: Text(
@@ -215,6 +218,7 @@ class _registrationState extends State<registration> {
                           onPressed: () {
                             setState(() {
                               queroEntrar = !queroEntrar;
+                              recuperar = false;
                             });
                           },
                           child: Text(
@@ -235,7 +239,7 @@ class _registrationState extends State<registration> {
       ),
     );
   }
-
+  
   botaoprincipalClicado() {
     String nome = _nomecontroller.text;
     String email = _emailcontroller.text;
