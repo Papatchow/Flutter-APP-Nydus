@@ -26,4 +26,13 @@ class ServiceAuthentication {
   return "Erro desconhecido";
 }
   }
+
+  Future<String?> emailRecuperacao(String email) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return (e.message);
+    }
+  }
 }

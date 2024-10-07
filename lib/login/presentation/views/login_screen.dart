@@ -3,7 +3,6 @@ import "package:appteste/_comum/my_snackbar.dart";
 import "package:appteste/login/presentation/views/login_autenthication.dart";
 import "package:appteste/login/presentation/views/login_decoration.dart";
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
 
 class registration extends StatefulWidget {
   const registration({super.key});
@@ -146,34 +145,22 @@ class _registrationState extends State<registration> {
                           child: Column(
                             children: [
                               TextFormField(
+                                controller: _emailcontroller,
                                 decoration: getAuthenticationInputDecoration(
-                                    "Nova Senha"),
-                                obscureText: true,
+                                    "Email"),
                                 validator: (String? value) {
                                   if (value == null || value.isEmpty) {
                                     return "Preenchimento Obrigatório";
                                   }
                                   if (value.length < 5) {
-                                    return "A nova senha é muito curta";
+                                    return "O email é muito curto";
                                   }
-                                  return null;
+                                  if (!value.contains("@")) {
+                                  return "O e-mail não é válido";
+                                }
+                                return null;
                                 },
                               ),
-                              const SizedBox(height: 8),
-                              TextFormField(
-                                decoration: getAuthenticationInputDecoration(
-                                    "Confirme a Nova Senha"),
-                                obscureText: true,
-                                validator: (String? value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Preenchimento Obrigatório";
-                                  }
-                                  if (value.length < 5) {
-                                    return "A confirmação de senha é muito curta";
-                                  }
-                                  return null;
-                                },
-                              )
                             ],
                           )),
                       const SizedBox(height: 16),
@@ -189,7 +176,7 @@ class _registrationState extends State<registration> {
                           botaoprincipalClicado();
                         },
                         child: Text(
-                          (queroEntrar) ? "Entrar" : "Cadastrar",
+                          (recuperar) ? "Enviar Email de Recuperação" : (queroEntrar) ? "Entrar" : "Cadastrar",
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),
@@ -246,8 +233,26 @@ class _registrationState extends State<registration> {
     String senha = _senhacontroller.text;
 
     if (_formKey.currentState!.validate()) {
-      if (queroEntrar) {
+      if (recuperar) {
+        _serviceAut.emailRecuperacao(email).then((String? erro) {
+                    if (erro != null) {
+            showSnackBar(context: context, texto: erro);
+          } else {
+            showSnackBar(
+              context: context,
+              texto: "E-mail de recuperação enviado",
+              isErro: false
+            );
+            setState(() {
+              recuperar = false;
+            });
+          }
+        }); 
+      } else if (queroEntrar) {
         print("Entrada Validada");
+
+        _emailcontroller.clear();
+        _senhacontroller.clear();
       } else {
         print("Cadastro Validado");
         print(
@@ -261,6 +266,16 @@ class _registrationState extends State<registration> {
           } else {
             showSnackBar(context: context, texto: "Cadastro efetuado com sucesso", 
             isErro: false);
+
+          _nomecontroller.clear();
+          _emailcontroller.clear();
+          _senhacontroller.clear();
+          _confirmarSenhacontroller.clear();
+
+          setState(() {
+            queroEntrar = true;
+          });
+
           }
         });
       }
